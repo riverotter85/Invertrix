@@ -37,7 +37,7 @@ def horizontalInvert(img, height, width):
     return new_image
 
 @jit(target_backend='cuda')
-def completeInvert(img, height, width):
+def bothInvert(img, height, width):
     new_image = np.zeros((height, width, 3))
     for y in range(0, height):
         for x in range(0, width):
@@ -65,22 +65,23 @@ def main(stdscr):
     menuController.setExecutionStatus("Starting inversion process on GPU...")
     menuController.showMenu()
     
-    for img_filename in img_files:
-        image = cv2.imread("./data/input/" + img_filename, cv2.IMREAD_COLOR)
+    for i in range(len(img_files)):
+        image = cv2.imread("./data/input/" + img_files[i], cv2.IMREAD_COLOR)
         height = image.shape[0]
         width = image.shape[1]
 
-        # Vertical Invert
-        new_image = verticalInvert(image, height, width)
-        cv2.imwrite("./data/output/vertical/vertical_" + img_filename, new_image)
-
-        # Horizontal Invert
-        new_image = horizontalInvert(image, height, width)
-        cv2.imwrite("./data/output/horizontal/horizontal_" + img_filename, new_image)
-
-        # Complete Invert
-        new_image = completeInvert(image, height, width)
-        cv2.imwrite("./data/output/complete/complete_" + img_filename, new_image)
+        if (selectedOptions[i] == 1):
+            # Vertical Invert
+            new_image = verticalInvert(image, height, width)
+            cv2.imwrite("./data/output/vertical_" + img_files[i], new_image)
+        elif (selectedOptions[i] == 2):
+            # Horizontal Invert
+            new_image = horizontalInvert(image, height, width)
+            cv2.imwrite("./data/output/horizontal_" + img_files[i], new_image)
+        elif (selectedOptions[i] == 3):
+            # Complete Invert
+            new_image = bothInvert(image, height, width)
+            cv2.imwrite("./data/output/both_" + img_files[i], new_image)
 
     menuController.setExecutionStatus("Done! Press ANY KEY to exit.")
     menuController.showMenu()
