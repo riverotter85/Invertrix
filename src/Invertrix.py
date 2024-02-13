@@ -15,6 +15,9 @@ import os
 import cv2
 import numpy as np
 from numba import jit
+import curses
+from curses import wrapper
+from MenuController import MenuController
 
 @jit(target_backend='cuda')
 def verticalInvert(img, height, width):
@@ -54,10 +57,14 @@ def detectInputFiles(dirPath):
 
     return img_files
 
-def main():
+def main(stdscr):
     img_files = detectInputFiles("./data/input")
+
+    menuController = MenuController(stdscr, img_files)
+    selectedOptions = menuController.prompt()
     
-    print("Starting inversion process on GPU...")
+    menuController.setExecutionStatus("Starting inversion process on GPU...")
+    menuController.showMenu()
     
     for img_filename in img_files:
         image = cv2.imread("./data/input/" + img_filename, cv2.IMREAD_COLOR)
@@ -76,7 +83,9 @@ def main():
         new_image = completeInvert(image, height, width)
         cv2.imwrite("./data/output/complete/complete_" + img_filename, new_image)
 
-    print("Done.")
+    menuController.setExecutionStatus("Done! Press ANY KEY to exit.")
+    menuController.showMenu()
+    menuController.getKey()
 
 if __name__ == "__main__":
-    main()
+    wrapper(main)

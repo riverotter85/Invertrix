@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 ./src/Invertrix.py
+sudo python3 ./src/Invertrix.py
