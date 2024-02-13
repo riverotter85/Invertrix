@@ -15,7 +15,6 @@ import os
 import cv2
 import numpy as np
 from numba import jit
-import curses
 from curses import wrapper
 from MenuController import MenuController
 
