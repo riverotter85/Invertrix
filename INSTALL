@@ -1,0 +1,7 @@
+Invertrix uses CUDA first and foremost, as well as a few other libraries including OpenCV, curses, and numpy. Additionally, you will need to have pypi installed on your system if it isn't already. Below is a list of commands for what you will need to install.
+
+- Pypi: sudo apt-get install pypi
+- OpenCV: sudo pip install cv2
+- NumPy: sudo pip install numpy
+- Numba: sudo pip install numba
+- Curses: sudo pip install curses
