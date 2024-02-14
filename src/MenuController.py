@@ -1,7 +1,33 @@
+#!/usr/bin/env python3
+
+"""
+Filename: MenuController.py
+Author: Logan Davis
+Created: 2/13/2024
+Last Modified: 2/14/2024
+
+"""
+
 import curses
 
+# Displays the frontend Invertrix menu using the curses library. The menu accepts user input, showing the execution status as a result
+# Example:
+#   menuController = MenuController(stdscr, ["list","of","file","paths"])
+#   selectedOptions = menuController.prompt()
+#
+#   *** Do stuff with options returned ***
+#
+#   menuController.setExecutionStatus("Done. Press ANY KEY to continue.")
+#   menuController.showMenu()
+#   menuController.getKey()
 class MenuController:
 
+    # Constructor function for MenuController
+    # Arguments:
+    # - self (MenuController): Instance of class
+    # - stdscr (stdscr): curses object passed from wrapper
+    # - imageFiles (List): List of image filenames to be shown in menu
+    # Returns: None
     def __init__(self, stdscr, imageFiles):
         self.stdscr = stdscr
         self.entries = imageFiles
@@ -9,6 +35,10 @@ class MenuController:
         self.selectedOptions = [0 for i in self.entries]
         self.executionStatus = ""
 
+    # Prints formatted menu to the CLI screen
+    # Arguments:
+    # - self (MenuController): Instance of class
+    # Returns: None
     def showMenu(self):
         options = ["None", "Vertical", "Horizontal", "Both"] # Configuration arguments for each entry
 
@@ -62,12 +92,25 @@ class MenuController:
         # Show final output to screen
         self.stdscr.refresh()
 
+    # Setter function for the execution status that's displayed at the bottom of the menu
+    # Arguments:
+    # - self   (MenuController): Instance of class
+    # - status (String): Status to be set
+    # Returns: None
     def setExecutionStatus(self, status):
         self.executionStatus = status
-    
+ 
+    # Retrieves next key pressed by user
+    # Arguments:
+    # - self (MenuController): Instance of class
+    # Returns: (curses.KEY_VALUE)
     def getKey(self):
         return self.stdscr.getch()
 
+    # Modifies menu based on the key the user presses; continues if ENTER is pressed; quits if ESCAPE is pressed
+    # Arguments:
+    # - self (MenuController): Instance of class
+    # Returns: (bool)
     def readKey(self):
         status = True
 
@@ -86,7 +129,11 @@ class MenuController:
             exit()
 
         return status
-        
+ 
+    # Main loop method which displays the menu and prompts the user for input; returns selected options
+    # Arguments:
+    # - self (MenuController): Instance of class
+    # Returns: (List)
     def prompt(self):
         running = True
         while running:

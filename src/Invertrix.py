@@ -6,8 +6,8 @@ Description:
 
 Filename: Invertrix.py
 Author: Logan Davis
-Date Created: 2/12/2024
-Last Modified: 2/12/2024
+Created: 2/12/2024
+Last Modified: 2/14/2024
 
 """
 
@@ -20,6 +20,12 @@ from timeit import default_timer as timer
 from curses import wrapper
 from MenuController import MenuController
 
+# CUDA GPU function that vertically inverts image
+# Arguments:
+# - img (Image): cv2 image that is being copied
+# - height (int): Height of image
+# - width (int): Width of image
+# Returns: (Image)
 @jit(target_backend='cuda')
 def verticalInvert(img, height, width):
     new_image = np.zeros((height, width, 3))
@@ -29,6 +35,12 @@ def verticalInvert(img, height, width):
     
     return new_image
 
+# CUDA GPU function that horizontally inverts image
+# Arguments:
+# - img (Image): cv2 image that is being copied
+# - height (int): Height of image
+# - width (int): Width of image
+# Returns: (Image)
 @jit(target_backend='cuda')
 def horizontalInvert(img, height, width):
     new_image = np.zeros((height, width, 3))
@@ -38,6 +50,12 @@ def horizontalInvert(img, height, width):
     
     return new_image
 
+# CUDA GPU function that vertically and horizontally inverts image
+# Arguments:
+# - img (Image): cv2 image that is being copied
+# - height (int): Height of image
+# - width (int): Width of image
+# Returns: (Image)
 @jit(target_backend='cuda')
 def bothInvert(img, height, width):
     new_image = np.zeros((height, width, 3))
@@ -47,6 +65,9 @@ def bothInvert(img, height, width):
     
     return new_image
 
+# Parses command line arguments, returning the appropriate input/output folder paths and execution status
+# Arguments: None
+# Returns: (String, String, String)
 def parseCliArguments():
     inputDir = "./data/input"
     outputDir = "./data/output"
@@ -65,6 +86,10 @@ def parseCliArguments():
     
     return inputDir, outputDir, status
 
+# Gets list of valid image files within folder
+# Arguments:
+# - dirPath: path of folder we are checking
+# Returns: (List)
 def detectInputFiles(dirPath):
     img_files = []
 
@@ -76,39 +101,49 @@ def detectInputFiles(dirPath):
 
     return img_files
 
+# Main function
+# Arguments:
+# - stdscr (stdscr): curses object passed from wrapper
+# Returns: None
 def main(stdscr):
+    # Parse arguments and retrieve image files from input folder
     inputDir, outputDir, status = parseCliArguments()
     img_files = detectInputFiles(inputDir)
 
+    # Show CLI menu and prompt user
     menuController = MenuController(stdscr, img_files)
     menuController.setExecutionStatus(status)
     selectedOptions = menuController.prompt()
 
     startTime = timer()
-    
+ 
+    # Show user that we're starting CUDA execution
     menuController.setExecutionStatus("Starting inversion process on GPU...")
     menuController.showMenu()
-    
+ 
+    # Work on each image file according to what the user specified
     for i in range(len(img_files)):
+        # Get image info
         image = cv2.imread(inputDir + "/" + img_files[i], cv2.IMREAD_COLOR)
         height = image.shape[0]
         width = image.shape[1]
 
+        # Vertical Invert
         if (selectedOptions[i] == 1):
-            # Vertical Invert
             new_image = verticalInvert(image, height, width)
             cv2.imwrite(outputDir + "/vertical_" + img_files[i], new_image)
+        # Horizontal Invert
         elif (selectedOptions[i] == 2):
-            # Horizontal Invert
             new_image = horizontalInvert(image, height, width)
             cv2.imwrite(outputDir + "/horizontal_" + img_files[i], new_image)
+        # Complete Invert
         elif (selectedOptions[i] == 3):
-            # Complete Invert
             new_image = bothInvert(image, height, width)
             cv2.imwrite(outputDir + "/both_" + img_files[i], new_image)
 
     runTime = timer() - startTime
 
+    # We're done! Show overall execution time
     menuController.setExecutionStatus("Completed in %.3fs. Press ANY KEY to exit." % runTime)
     menuController.showMenu()
     menuController.getKey()
