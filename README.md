@@ -10,7 +10,7 @@ Invertrix reads in a folder of images, where the user is then able to specify ho
 - ```horizontal_<filename>```: The image is flipped horizontally
 - ```both_<filename>```: The image is flipped both vertically and horizontally
 
-The program uses Python's CUDA library in order to speed up image processing. Once the operation is complete, the final runtime is displayed before exiting. If the user specifies None as the option for an image, no new file is created.
+The program uses Python's CUDA library in order to speed up image processing. Once the operation is complete, the final runtime is displayed before exiting. If the user specifies ```None``` as the option for an image, no new file is created.
 
 ## Prerequisites
 
