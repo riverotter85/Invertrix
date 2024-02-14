@@ -11,6 +11,7 @@ Last Modified: 2/12/2024
 
 """
 
+import sys
 import os
 import cv2
 import numpy as np
@@ -45,6 +46,24 @@ def bothInvert(img, height, width):
     
     return new_image
 
+def parseCliArguments():
+    inputDir = "./data/input"
+    outputDir = "./data/output"
+    status = ""
+
+    i = 1
+    while i+1 < len(sys.argv):
+        if sys.argv[i] == "-i" or sys.argv[i] == "--input":
+            inputDir = sys.argv[i+1]
+            status += "Input folder set to '" + sys.argv[i+1] + "'. "
+        elif sys.argv[i] == "-o" or sys.argv[i] == "--output":
+            outputDir = sys.argv[i+1]
+            status += "Output folder set to '" + sys.argv[i+1] + "'. "
+
+        i += 2
+    
+    return inputDir, outputDir, status
+
 def detectInputFiles(dirPath):
     img_files = []
 
@@ -57,31 +76,33 @@ def detectInputFiles(dirPath):
     return img_files
 
 def main(stdscr):
-    img_files = detectInputFiles("./data/input")
+    inputDir, outputDir, status = parseCliArguments()
+    img_files = detectInputFiles(inputDir)
 
     menuController = MenuController(stdscr, img_files)
+    menuController.setExecutionStatus(status)
     selectedOptions = menuController.prompt()
     
     menuController.setExecutionStatus("Starting inversion process on GPU...")
     menuController.showMenu()
     
     for i in range(len(img_files)):
-        image = cv2.imread("./data/input/" + img_files[i], cv2.IMREAD_COLOR)
+        image = cv2.imread(inputDir + "/" + img_files[i], cv2.IMREAD_COLOR)
         height = image.shape[0]
         width = image.shape[1]
 
         if (selectedOptions[i] == 1):
             # Vertical Invert
             new_image = verticalInvert(image, height, width)
-            cv2.imwrite("./data/output/vertical_" + img_files[i], new_image)
+            cv2.imwrite(outputDir + "/vertical_" + img_files[i], new_image)
         elif (selectedOptions[i] == 2):
             # Horizontal Invert
             new_image = horizontalInvert(image, height, width)
-            cv2.imwrite("./data/output/horizontal_" + img_files[i], new_image)
+            cv2.imwrite(outputDir + "/horizontal_" + img_files[i], new_image)
         elif (selectedOptions[i] == 3):
             # Complete Invert
             new_image = bothInvert(image, height, width)
-            cv2.imwrite("./data/output/both_" + img_files[i], new_image)
+            cv2.imwrite(outputDir + "/both_" + img_files[i], new_image)
 
     menuController.setExecutionStatus("Done! Press ANY KEY to exit.")
     menuController.showMenu()

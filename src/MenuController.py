@@ -10,28 +10,43 @@ class MenuController:
         self.executionStatus = ""
 
     def showMenu(self):
-        options = ["None", "Vertical", "Horizontal", "Both"]
+        options = ["None", "Vertical", "Horizontal", "Both"] # Configuration arguments for each entry
 
+        # Clear the screen and display Invertrix title
         self.stdscr.clear()
         self.stdscr.addstr(1, 20, "INVERTRIX!")
         self.stdscr.addstr(2, 20, "==========")
 
+        # Cursor for selected row/entry
+        self.stdscr.addstr(self.selectedEntry+4, 0, ">>")
+
+        # List out each entry, as well as the options (including which one is selected)
         for i in range(len(self.entries)):
-            self.stdscr.addstr(self.selectedEntry+4, 0, ">>")
+            # Entry
             self.stdscr.addstr(i+4, 4, self.entries[i])
 
-            prevOptionLength = 0
+            # Start square bracket for options
             self.stdscr.addstr(i+4, 20, " [")
+
+            # List out options
+            prevOptionLength = 0
             for j in range(len(options)):
+                # Case where option is currently selected
                 if self.selectedOptions[i] == j:
                     self.stdscr.addstr(i+4, 22+prevOptionLength, options[j], curses.A_STANDOUT)
+                # Case where option is not selected (default)
                 else:
                     self.stdscr.addstr(i+4, 22+prevOptionLength, options[j])
                 prevOptionLength += len(options[j])
+
+                # Separate each option with ", "
                 self.stdscr.addstr(i+4, 22+prevOptionLength, ", ")
                 prevOptionLength += 2
+            
+            # Overwrite last comma instance with end square bracket
             self.stdscr.addstr(i+4, 22+prevOptionLength-2, "]")
 
+        # Display options
         self.stdscr.addstr(len(self.entries)+5, 0, "ESC:")
         self.stdscr.addstr(len(self.entries)+5, 12, "Exit")
         self.stdscr.addstr(len(self.entries)+6, 0, "UP/DOWN:")
@@ -41,8 +56,10 @@ class MenuController:
         self.stdscr.addstr(len(self.entries)+8, 0, "ENTER")
         self.stdscr.addstr(len(self.entries)+8, 12, "Start!")
 
+        # Below, display execution status (if any)
         self.stdscr.addstr(len(self.entries)+10, 0, self.executionStatus)
 
+        # Show final output to screen
         self.stdscr.refresh()
 
     def setExecutionStatus(self, status):
