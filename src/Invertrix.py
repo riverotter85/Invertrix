@@ -24,6 +24,8 @@ from timeit import default_timer as timer
 from curses import wrapper
 from MenuController import MenuController
 
+INVERTRIX_VERSION = "1.0.0"
+
 # CUDA GPU function that vertically inverts image
 # Arguments:
 # - img (Image): cv2 image that is being copied
@@ -32,12 +34,12 @@ from MenuController import MenuController
 # Returns: (Image)
 @jit(target_backend='cuda')
 def verticalInvert(img, height, width):
-    new_image = np.zeros((height, width, 3))
+    newImage = np.zeros((height, width, 3))
     for y in range(0, height):
         for x in range(0, width):
-            new_image[y, x] = img[height-y-1, x]
+            newImage[y, x] = img[height-y-1, x]
     
-    return new_image
+    return newImage
 
 # CUDA GPU function that horizontally inverts image
 # Arguments:
@@ -47,12 +49,12 @@ def verticalInvert(img, height, width):
 # Returns: (Image)
 @jit(target_backend='cuda')
 def horizontalInvert(img, height, width):
-    new_image = np.zeros((height, width, 3))
+    newImage = np.zeros((height, width, 3))
     for y in range(0, height):
         for x in range(0, width):
-            new_image[y, x] = img[y, width-x-1]
+            newImage[y, x] = img[y, width-x-1]
     
-    return new_image
+    return newImage
 
 # CUDA GPU function that vertically and horizontally inverts image
 # Arguments:
@@ -62,12 +64,12 @@ def horizontalInvert(img, height, width):
 # Returns: (Image)
 @jit(target_backend='cuda')
 def bothInvert(img, height, width):
-    new_image = np.zeros((height, width, 3))
+    newImage = np.zeros((height, width, 3))
     for y in range(0, height):
         for x in range(0, width):
-            new_image[y, x] = img[height-y-1, width-x-1]
+            newImage[y, x] = img[height-y-1, width-x-1]
     
-    return new_image
+    return newImage
 
 # Parses command line arguments, returning the appropriate input/output folder paths and execution status
 # Arguments: None
@@ -95,15 +97,15 @@ def parseCliArguments():
 # - dirPath: path of folder we are checking
 # Returns: (List)
 def detectInputFiles(dirPath):
-    img_files = []
+    imgFiles = []
 
-    img_dir = os.fsencode(dirPath)
-    for file in os.listdir(img_dir):
-        img_filename = os.fsdecode(file)
-        if img_filename.endswith(".png"):
-            img_files.append(img_filename)
+    imgDir = os.fsencode(dirPath)
+    for file in os.listdir(imgDir):
+        imgFilename = os.fsdecode(file)
+        if imgFilename.endswith(".png"):
+            imgFiles.append(imgFilename)
 
-    return img_files
+    return imgFiles
 
 # Main function
 # Arguments:
@@ -112,10 +114,10 @@ def detectInputFiles(dirPath):
 def main(stdscr):
     # Parse arguments and retrieve image files from input folder
     inputDir, outputDir, status = parseCliArguments()
-    img_files = detectInputFiles(inputDir)
+    imgFiles = detectInputFiles(inputDir)
 
     # Show CLI menu and prompt user
-    menuController = MenuController(stdscr, img_files)
+    menuController = MenuController(stdscr, INVERTRIX_VERSION, imgFiles)
     menuController.setExecutionStatus(status)
     selectedOptions = menuController.prompt()
 
@@ -126,24 +128,24 @@ def main(stdscr):
     menuController.showMenu()
  
     # Work on each image file according to what the user specified
-    for i in range(len(img_files)):
+    for i in range(len(imgFiles)):
         # Get image info
-        image = cv2.imread(inputDir + "/" + img_files[i], cv2.IMREAD_COLOR)
+        image = cv2.imread(inputDir + "/" + imgFiles[i], cv2.IMREAD_COLOR)
         height = image.shape[0]
         width = image.shape[1]
 
         # Vertical Invert
         if (selectedOptions[i] == 1):
-            new_image = verticalInvert(image, height, width)
-            cv2.imwrite(outputDir + "/vertical_" + img_files[i], new_image)
+            newImage = verticalInvert(image, height, width)
+            cv2.imwrite(outputDir + "/vertical_" + imgFiles[i], newImage)
         # Horizontal Invert
         elif (selectedOptions[i] == 2):
-            new_image = horizontalInvert(image, height, width)
-            cv2.imwrite(outputDir + "/horizontal_" + img_files[i], new_image)
+            newImage = horizontalInvert(image, height, width)
+            cv2.imwrite(outputDir + "/horizontal_" + imgFiles[i], newImage)
         # Complete Invert
         elif (selectedOptions[i] == 3):
-            new_image = bothInvert(image, height, width)
-            cv2.imwrite(outputDir + "/both_" + img_files[i], new_image)
+            newImage = bothInvert(image, height, width)
+            cv2.imwrite(outputDir + "/both_" + imgFiles[i], newImage)
 
     runTime = timer() - startTime
 

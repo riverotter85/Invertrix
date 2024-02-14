@@ -26,10 +26,12 @@ class MenuController:
     # Arguments:
     # - self (MenuController): Instance of class
     # - stdscr (stdscr): curses object passed from wrapper
+    # - version (String): Invertrix version
     # - imageFiles (List): List of image filenames to be shown in menu
     # Returns: None
-    def __init__(self, stdscr, imageFiles):
+    def __init__(self, stdscr, version, imageFiles):
         self.stdscr = stdscr
+        self.version = version
         self.entries = imageFiles
         self.selectedEntry = 0
         self.selectedOptions = [0 for i in self.entries]
@@ -44,8 +46,8 @@ class MenuController:
 
         # Clear the screen and display Invertrix title
         self.stdscr.clear()
-        self.stdscr.addstr(1, 20, "INVERTRIX!")
-        self.stdscr.addstr(2, 20, "==========")
+        self.stdscr.addstr(1, 20, "INVERTRIX! (v%s)" % self.version)
+        self.stdscr.addstr(2, 20, "===================")
 
         # Cursor for selected row/entry
         self.stdscr.addstr(self.selectedEntry+4, 0, ">>")
