@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 
 """
-Project Name: Invertrix
-Description:
-
 Filename: Invertrix.py
 Author: Logan Davis
 Created: 2/12/2024
 Last Modified: 2/14/2024
+
+NOTE: This project was originally cloned from the template "CUDAatScaleForTheEnterpriseCourseProjectTemplate", which was provided by Chancellor Pascale.
+      The original code can be found at the link: https://github.com/PascaleCourseraCourses/CUDAatScaleForTheEnterpriseCourseProjectTemplate
+
+*** Invertrix ***
+
+A Python script that inverts image files using CUDA
 
 """
 
