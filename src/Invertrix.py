@@ -16,6 +16,7 @@ import os
 import cv2
 import numpy as np
 from numba import jit
+from timeit import default_timer as timer
 from curses import wrapper
 from MenuController import MenuController
 
@@ -82,6 +83,8 @@ def main(stdscr):
     menuController = MenuController(stdscr, img_files)
     menuController.setExecutionStatus(status)
     selectedOptions = menuController.prompt()
+
+    startTime = timer()
     
     menuController.setExecutionStatus("Starting inversion process on GPU...")
     menuController.showMenu()
@@ -104,7 +107,9 @@ def main(stdscr):
             new_image = bothInvert(image, height, width)
             cv2.imwrite(outputDir + "/both_" + img_files[i], new_image)
 
-    menuController.setExecutionStatus("Done! Press ANY KEY to exit.")
+    runTime = timer() - startTime
+
+    menuController.setExecutionStatus("Completed in %.3fs. Press ANY KEY to exit." % runTime)
     menuController.showMenu()
     menuController.getKey()
 
