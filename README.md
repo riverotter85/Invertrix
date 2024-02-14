@@ -1,32 +1,43 @@
-# CUDAatScaleForTheEnterpriseCourseProjectTemplate
-This is a template for the course project for the CUDA at Scale for the Enterprise
+# Invertrix
 
-## Project Description
+A Python script that inverts image files vertically and/or horizontally using CUDA
 
-Beyond just being a template for course members, this project can be used by non-course members as the general structure for CUDA projects.
+## Description
 
-## Code Organization
+Invertrix reads in a folder of images, where the user is then able to specify how each image will be inverted (if at all). The resulting output files are subsequently placed in a folder of the user's choosing. Depending on which options are selected, the files will display in the following format(s):
 
-```bin/```
-This folder should hold all binary/executable code that is built automatically or manually. Executable code should have use the .exe extension or programming language-specific extension.
+- ```vertical_<filename>```: The image is flipped vertically
+- ```horizontal_<filename>```: The image is flipped horizontally
+- ```grayscale_<filename>```: The image is flipped both vertically and horizontally
 
-```data/```
-This folder should hold all example data in any format. If the original data is rather large or can be brought in via scripts, this can be left blank in the respository, so that it doesn't require major downloads when all that is desired is the code/structure.
+The program uses Python's CUDA library in order to speed up image processing. Once the operation is complete, the final runtime is displayed before exiting. If the user specifies None as the option for an image, no new file is created.
 
-```lib/```
-Any libraries that are not installed via the Operating System-specific package manager should be placed here, so that it is easier for inclusion/linking.
+## Prerequisites
 
-```src/```
-The source code should be placed here in a hierarchical fashion, as appropriate.
+Invertrix uses CUDA first and foremost, as well as a few other libraries including OpenCV, curses, and numpy. Additionally, you will need to have pypi installed on your system if it isn't already. Below is a list of commands for what you will need to install.
 
-```README.md```
-This file should hold the description of the project so that anyone cloning or deciding if they want to clone this repository can understand its purpose to help with their decision.
+- Pypi: ```sudo apt-get install pypi```
+- OpenCV: ```sudo pip install cv2```
+- NumPy: ```sudo pip install numpy```
+- Numba: ```sudo pip install numba```
+- Curses: ```sudo pip install curses```
 
-```INSTALL```
-This file should hold the human-readable set of instructions for installing the code so that it can be executed. If possible it should be organized around different operating systems, so that it can be done by as many people as possible with different constraints.
+## How To Run
 
-```Makefile or CMAkeLists.txt or build.sh```
-There should be some rudimentary scripts for building your project's code in an automatic fashion.
+Once you have everything installed, you can execute the command ```./src/Invertrix.py``` or ```./src/Invertrix.py <args>``` from the Invertrix folder. Additionally, you can execute ```./run.sh```, which directly mimicks the results that are included in ```./data/artifacts```.
 
-```run.sh```
-An optional script used to run your executable code, either with or without command-line arguments.
+## Arguments
+
+Invertrix has two command line arguments you can use to help customize where the software looks.
+
+- ```-i <folder path>``` or ```--input <folder path>```: Changes the input directory where all the image files are read
+- ```-o <folder path>``` or ```--output <folder path>```: Changes the output directory where all the new images are placed
+
+## Controls
+
+To help navigate Invertrix, an explanation for each keyset is provided below.
+
+- ```ESC```: Exits the program
+- ```UP```/```DOWN```: Navigates between the different images the program sees
+- ```LEFT```/```RIGHT```: Navigates between invert operation(s) for the selected image
+- ```ENTER```: Starts running invert operation(s) with the current configuration
